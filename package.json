@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "Example of the JWT token run in the docker environment",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "compile": "tsc"
   },
   "repository": {
     "type": "git",
