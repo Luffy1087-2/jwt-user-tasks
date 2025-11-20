@@ -15,5 +15,16 @@
   "bugs": {
     "url": "https://github.com/Luffy1087-2/jwt-login/issues"
   },
-  "homepage": "https://github.com/Luffy1087-2/jwt-login#readme"
+  "homepage": "https://github.com/Luffy1087-2/jwt-login#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/typescript": "^0.4.29",
+    "jest": "^30.2.0",
+    "typescript": "^5.9.3"
+  }
 }
