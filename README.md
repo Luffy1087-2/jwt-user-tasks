@@ -4,7 +4,9 @@
 - typescript >= 5.9.3
 ### Configuration
 First, you should create a **JWT_ACCESS_TOKEN** used for verifying the authentication
+
 Here's how to do.
+
 Open the terminal and type `node`, then type the following command:
 ```javascript
 require('crypto').randomBytes(64).toString('hex')
