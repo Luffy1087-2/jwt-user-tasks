@@ -3,9 +3,10 @@ import {Router} from 'express';
 import { MongoFactory } from '../factory/mongo.factory.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { MongoUsersCollection } from '../config/mongo.config.js';
+import { MongoTasksCollection, MongoUsersCollection } from '../config/mongo.config.js';
 import { AssertBodyParameters } from '../middleware/assert-params.middleware.js';
 import { AlreadyAuthenticated } from '../middleware/already-authenticated.middleware.js';
+import { UserAuthenticated } from '../middleware/user-autenticated.middleware.js';
 
 dotenv.config();
 const router = Router();
@@ -36,8 +37,21 @@ router.post('/register', AssertBodyParameters, async (req, res) => {
   }
 });
 
-router.get('/getTask', (req, res) => {
+router.post('/createTask', UserAuthenticated, async (req, res) => {
+  const {userName} = (req as any).user;
+  const {name, description} = req.body;
+  if (!name) return res.status(400).json({message: 'name should be a valid string'});
+  if (!description) return res.status(400).json({message: 'description should be a valid string'});
+  const tasks = db.getCollection(MongoTasksCollection);
+  const doc = await tasks.insertOne({name, description, userName, status: 0});
+  res.status(201).json(doc);
+});
 
+router.get('/getTasks', UserAuthenticated, async (req, res) => {
+  const {userName} = (req as any).user;
+  const tasks = db.getCollection(MongoTasksCollection);
+  const doc = await tasks.find({userName}).toArray();
+  res.status(200).json(doc);
 });
 
 export default router;
