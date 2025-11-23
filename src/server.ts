@@ -1,10 +1,9 @@
+import dotenv from 'dotenv';
 import express from 'express';
-import env from 'dotenv';
 import router from './router.js';
 
+dotenv.config();
 const app = express();
-
-env.config();
-app.use(router);
 app.use(express.json());
-app.listen(3000);
+app.use(router);
+app.listen(3000, () => console.log('✅ Server su http://localhost:3000'));
