@@ -2,11 +2,12 @@
   "name": "jwt-user-tasks",
   "version": "1.0.0",
   "description": "user tasks api using jwt for authentication",
-  "main": "index.js",
+  "main": "dist/server.js",
   "type": "module",
   "scripts": {
     "test": "jest",
     "compile:watch": "tsc -w",
+    "compile": "tsc",
     "start": "node ./dist/server.js"
   },
   "repository": {
@@ -30,7 +31,7 @@
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.5",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/typescript": "^0.4.29",
+    "@types/node": "^24.10.1",
     "jest": "^30.2.0",
     "typescript": "^5.9.3"
   }
