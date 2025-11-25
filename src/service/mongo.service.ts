@@ -3,20 +3,21 @@ import { MongoConnectionString } from "../config/mongo.config.js";
 import { MongoClient } from 'mongodb';
 
 dotenv.config();
-export class MongoFactory {
-  private readonly client: MongoClient;
+export class MongoService {
+  private static client: MongoClient;
 
   constructor() {
     this.AssertEnvVars();
-    this.client = new MongoClient(MongoConnectionString);
+    if (MongoService.client) throw new TypeError('client is already an instance');
+    MongoService.client = new MongoClient(MongoConnectionString);
   }
 
   public async connect() {
-    await this.client.connect();
+    await MongoService.client.connect();
   }
 
   public getCollection(collectionName: string) {
-    const db = this.client.db();
+    const db = MongoService.client.db();
     const collection = db.collection(collectionName);
 
     return collection;

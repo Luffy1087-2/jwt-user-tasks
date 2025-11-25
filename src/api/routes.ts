@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { Router } from 'express';
-import { MongoFactory } from '../factory/mongo.factory.js';
+import { MongoService } from '../service/mongo.service.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { MongoTasksCollection, MongoUsersCollection } from '../config/mongo.config.js';
@@ -11,7 +11,7 @@ import { ObjectId } from 'mongodb';
 
 dotenv.config();
 const router = Router();
-const db = new MongoFactory();
+const db = new MongoService();
 
 router.post('/login', UserAlreadyAuthenticated, async (req, res) => {
   const { userName, pw } = req.body;
