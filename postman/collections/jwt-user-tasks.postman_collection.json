@@ -43,7 +43,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "",
+          "raw": "{\r\n    \"userName\": \"test\",\r\n    \"pw\": \"test\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
