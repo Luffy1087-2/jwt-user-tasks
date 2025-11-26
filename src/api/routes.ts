@@ -36,8 +36,7 @@ router.post('/refreshToken', async (req, res) => {
     if (!user) return res.status(403).json({ message: 'invalid refresh token' });
     const { userName, sub: userId } = user as any;
     const token = jwt.sign({ userName, sub: userId }, EnvVars.jwtAccessToken, { expiresIn: '1m' });
-    const refrehToken = jwt.sign({ userName, sub: userId }, EnvVars.jwtRefreshToken, { expiresIn: '1w' });
-    res.status(201).json({ token, refrehToken });
+    res.status(201).json({ token });
   } catch (e: any) {
     res.status(500).json({ message: e.message });
   }
