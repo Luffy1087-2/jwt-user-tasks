@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "c14a5406-5ffc-4bd6-99e2-8bf15ee2fff9",
+    "_postman_id": "3caca2d7-7bc4-4ba3-953c-2b2ffded281d",
     "name": "jwt-user-tasks",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -11,9 +11,11 @@
         {
           "listen": "test",
           "script": {
-            "id": "9ed7c910-5690-405e-8e37-6308d01cbb25",
+            "id": "306de149-b46e-4302-90f6-cdaa354c593d",
             "exec": [
-              "pm.environment.set(\"token\", pm.response.json().token);"
+              "const json = pm.response.json();\r",
+              "if (json && json.token) pm.environment.set(\"token\",json.token);\r",
+              "if (json && json.refreshToken) pm.environment.set(\"refreshToken\",json.refreshToken);"
             ],
             "type": "text/javascript"
           }
@@ -21,7 +23,7 @@
         {
           "listen": "prerequest",
           "script": {
-            "id": "99ed2d4b-649f-4b15-bc48-e536e0af923d",
+            "id": "4aa3ae10-48e5-44db-b200-877efc4a760e",
             "exec": [
               ""
             ],
@@ -29,19 +31,19 @@
           }
         }
       ],
-      "id": "5ab8d69b-70ae-40a6-bc80-ec55b6ff5eeb",
+      "id": "5d5c71ce-cac5-4a97-ac49-d0678c8bf970",
       "request": {
         "method": "POST",
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImFkbWluIiwiaWF0IjoxNzYzOTM4MjQxLCJleHAiOjE3NjM5NDE4NDF9.99T6aszId0PfbZCMVGKp2AL3s0ZoV33JQ-VMlcBEBQg",
+            "value": "Bearer {{token}}",
             "type": "text"
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"userName\": \"test\",\r\n    \"pw\": \"testpw\"\r\n}",
+          "raw": "",
           "options": {
             "raw": {
               "language": "json"
@@ -69,9 +71,9 @@
           "script": {
             "id": "9ea1e2f2-cf86-4e3e-a2b2-2233a723283e",
             "exec": [
-              "const tokens = pm.response.json();\r",
-              "if (tokens && tokens.token) pm.environment.set(\"token\", tokens.token);\r",
-              "if (tokens && tokens.refrehToken) pm.environment.set(\"refrehToken\", tokens.refrehToken);"
+              "const json = pm.response.json();\r",
+              "if (json && json.token) pm.environment.set(\"token\",json.token);\r",
+              "if (json && json.refreshToken) pm.environment.set(\"refreshToken\",json.refreshToken);"
             ],
             "type": "text/javascript"
           }
@@ -87,7 +89,7 @@
           }
         }
       ],
-      "id": "fe418182-dbb3-4be5-b4b3-473ae22378d2",
+      "id": "86a25545-69d1-48b4-a694-a380b1849e29",
       "request": {
         "method": "POST",
         "header": [
@@ -100,7 +102,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "",
+          "raw": "{\r\n    \"userName\": \"admin\",\r\n    \"pw\": \"test\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -108,13 +110,10 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:3000/login",
+          "raw": "http://localhost:3000/login",
           "protocol": "http",
           "host": [
-            "127",
-            "0",
-            "0",
-            "1"
+            "localhost"
           ],
           "port": "3000",
           "path": [
@@ -125,15 +124,14 @@
     },
     {
       "name": "createTask",
-      "id": "4d59ef7a-ff29-4bfa-a4a5-966878e55006",
+      "id": "1dd7942a-f7dd-4a65-950d-6caa5e3a2e7f",
       "request": {
         "method": "POST",
         "header": [
           {
             "key": "Authorization",
             "value": "Bearer {{token}}",
-            "type": "text",
-            "uuid": "5b170d24-07fa-4c60-94e2-d526086c2829"
+            "type": "text"
           }
         ],
         "body": {
@@ -160,20 +158,19 @@
     },
     {
       "name": "changeTask",
-      "id": "314c14a3-761d-48ab-ae52-32b21b9b2dc8",
+      "id": "b71cb8bc-9d11-4341-952e-7902126fed3f",
       "request": {
         "method": "PUT",
         "header": [
           {
             "key": "Authorization",
             "value": "Bearer {{token}}",
-            "type": "text",
-            "uuid": "008952af-a0f2-44b7-b904-f3fa8061bd9c"
+            "type": "text"
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{ \r\n    \"taskId\": \"6924fe55d7e1c1f102a0c434\",\r\n    \"name\": \"something\",\r\n    \"description\": \"something new\",\r\n    \"status\": 1\r\n}",
+          "raw": "{ \r\n    \"taskId\": \"69250037c300b029043a1a86\",\r\n    \"description\": \"diesel full\",\r\n    \"status\": 0\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -194,16 +191,40 @@
       }
     },
     {
+      "name": "getTasks",
+      "id": "5ec840f3-5b40-4058-a500-190f02319fb0",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/getTasks",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "getTasks"
+          ]
+        }
+      }
+    },
+    {
       "name": "deleteTask",
-      "id": "f4c597e8-4e1f-4c7a-93af-331ea42bafbc",
+      "id": "e002f584-096e-4dea-9162-c17026dd7fac",
       "request": {
         "method": "DELETE",
         "header": [
           {
             "key": "Authorization",
             "value": "Bearer {{token}}",
-            "type": "text",
-            "uuid": "04ae700c-ccde-42bb-b1ee-d0f4fefd1240"
+            "type": "text"
           }
         ],
         "body": {
@@ -229,27 +250,60 @@
       }
     },
     {
-      "name": "getTasks",
-      "id": "01e1d3e7-3047-4820-b7d3-43abe8d1df93",
+      "name": "refreshToken",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "9ea1e2f2-cf86-4e3e-a2b2-2233a723283e",
+            "exec": [
+              "const json = pm.response.json();\r",
+              "if (json && json.token) pm.environment.set(\"token\",json.token);\r",
+              "if (json && json.refreshToken) pm.environment.set(\"refreshToken\",json.refreshToken);"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "347cbfb5-d451-486f-a5a9-eddc3da84ec4",
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "id": "b0ecb1aa-7aaf-41aa-8214-f6fe8f688442",
       "request": {
-        "method": "GET",
+        "method": "POST",
         "header": [
           {
             "key": "Authorization",
             "value": "Bearer {{token}}",
             "type": "text",
-            "uuid": "32a38907-791d-494c-a796-a2bd7facf56d"
+            "disabled": true
           }
         ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"userName\": \"admin\",\r\n    \"pw\": \"test\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
-          "raw": "http://localhost:3000/getTasks",
+          "raw": "http://localhost:3000/login",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "3000",
           "path": [
-            "getTasks"
+            "login"
           ]
         }
       }

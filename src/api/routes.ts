@@ -20,10 +20,26 @@ router.post('/login', UserAlreadyAuthenticated, async (req, res) => {
     const user = await users.findOne({ userName });
     if (!user || !bcrypt.compareSync(pw, user.pw)) return res.status(403).json({ message: 'login failed' });
     const token = jwt.sign({ userName, sub: user._id }, EnvVars.jwtAccessToken, { expiresIn: '1m' });
-    const refrehToken = jwt.sign({ userName, sub: user._id }, EnvVars.jwtRefreshToken, { expiresIn: '1w' });
-    res.status(201).json({ token, refrehToken });
+    const refreshToken = jwt.sign({ userName, sub: user._id }, EnvVars.jwtRefreshToken, { expiresIn: '1w' });
+    res.status(201).json({ token, refreshToken });
   } catch (e: any) {
     res.status(500).json({ message: e.message })
+  }
+});
+
+router.post('/refreshToken', async (req, res) => {
+  try {
+    const auth = req.headers['authorization'];
+    const refreshToken = auth?.startsWith('Bearer ') && auth.split(' ')[1];
+    if (!refreshToken) return res.status(403).json({ message: 'invalid refresh token' });
+    const user = jwt.verify(refreshToken, EnvVars.jwtRefreshToken);
+    if (!user) return res.status(403).json({ message: 'invalid refresh token' });
+    const { userName, sub: userId } = user as any;
+    const token = jwt.sign({ userName, sub: userId }, EnvVars.jwtAccessToken, { expiresIn: '1m' });
+    const refrehToken = jwt.sign({ userName, sub: userId }, EnvVars.jwtRefreshToken, { expiresIn: '1w' });
+    res.status(201).json({ token, refrehToken });
+  } catch (e: any) {
+    res.status(500).json({ message: e.message });
   }
 });
 
@@ -34,10 +50,11 @@ router.post('/register', AssertBodyParameters, async (req, res) => {
     const user = await users.findOne({ userName });
     if (user) return res.status(403).json({ message: 'user already present' });
     const hashedPw = await bcrypt.hash(pw, 10);
-    const dbDoc = await users.insertOne({ userName, pw: hashedPw });
-    if (!dbDoc.acknowledged) return res.status(403).json({ message: 'error while inserting document' });
-    const token = jwt.sign({ userName, sub: dbDoc.insertedId }, EnvVars.jwtAccessToken, { expiresIn: '1h' });
-    res.status(201).json({ token });
+    const addedUser = await users.insertOne({ userName, pw: hashedPw });
+    if (!addedUser.acknowledged) return res.status(403).json({ message: 'error while inserting document' });
+    const token = jwt.sign({ userName, sub: addedUser.insertedId }, EnvVars.jwtAccessToken, { expiresIn: '1h' });
+    const refreshToken = jwt.sign({ userName, sub: addedUser.insertedId }, EnvVars.jwtRefreshToken, { expiresIn: '1w' });
+    res.status(201).json({ token, refrehToken: refreshToken });
   } catch (e: any) {
     res.status(500).json({ message: e.message });
   }
