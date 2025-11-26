@@ -69,9 +69,9 @@
           "script": {
             "id": "9ea1e2f2-cf86-4e3e-a2b2-2233a723283e",
             "exec": [
-              "if (pm.response.json().token) {\r",
-              "    pm.environment.set(\"token\", pm.response.json().token);\r",
-              "}"
+              "const tokens = pm.response.json();\r",
+              "if (tokens && tokens.token) pm.environment.set(\"token\", tokens.token);\r",
+              "if (tokens && tokens.refrehToken) pm.environment.set(\"refrehToken\", tokens.refrehToken);"
             ],
             "type": "text/javascript"
           }
@@ -100,7 +100,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"userName\": \"test\",\r\n    \"pw\": \"testpw\"\r\n}",
+          "raw": "",
           "options": {
             "raw": {
               "language": "json"
@@ -108,10 +108,13 @@
           }
         },
         "url": {
-          "raw": "http://localhost:3000/login",
+          "raw": "http://127.0.0.1:3000/login",
           "protocol": "http",
           "host": [
-            "localhost"
+            "127",
+            "0",
+            "0",
+            "1"
           ],
           "port": "3000",
           "path": [

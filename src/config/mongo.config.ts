@@ -1,3 +1,5 @@
-export const MongoConnectionString = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@${process.env.MONGO_SERVICE_NAME}:27017/${process.env.MONGO_INITDB_DATABASE}?authSource=admin`;
+import { EnvVars } from "../core/env-vars.core.js";
+
+export const MongoConnectionString = `mongodb://${EnvVars.mongoInitDbRootUserName}:${EnvVars.mongoInitDbRootPassword}@${EnvVars.mongoServiceName}:27017/${EnvVars.mongoInitDbDatabase}?authSource=admin`;
 export const MongoUsersCollection = 'users';
 export const MongoTasksCollection = 'tasks';
