@@ -96,13 +96,12 @@
           {
             "key": "Authorization",
             "value": "Bearer {{token}}",
-            "type": "text",
-            "disabled": true
+            "type": "text"
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"userName\": \"admin\",\r\n    \"pw\": \"test\"\r\n}",
+          "raw": "{\r\n    \"userName\": \"test\",\r\n    \"pw\": \"test\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
