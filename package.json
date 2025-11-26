@@ -8,6 +8,7 @@
     "test": "jest",
     "compile:watch": "tsc -w",
     "compile": "tsc",
+    "start:dev": "tsc && node ./dist/server.js",
     "start": "node ./dist/server.js",
     "docker:init": "docker-compose up -d --build",
     "docker:start": "docker-compose down && docker-compose up -d",

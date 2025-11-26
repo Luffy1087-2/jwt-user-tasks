@@ -1,7 +1,7 @@
 import { MongoConnectionString } from "../config/mongo.config.js";
 import { MongoClient } from 'mongodb';
 
-export class MongoService {
+export default new (class MongoService {
   private static client: MongoClient;
 
   constructor() {
@@ -15,4 +15,4 @@ export class MongoService {
 
     return collection;
   }
-}
+});

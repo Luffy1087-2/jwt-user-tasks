@@ -1,8 +1,7 @@
-import dotenv from 'dotenv';
-import { Router } from 'express';
-import { MongoService } from '../service/mongo.service.js';
+import db from '../service/mongo.service.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { Router } from 'express';
 import { MongoTasksCollection, MongoUsersCollection } from '../config/mongo.config.js';
 import { AssertBodyParameters } from '../middleware/assert-params.middleware.js';
 import { UserAlreadyAuthenticated } from '../middleware/user-already-authenticated.middleware.js';
@@ -11,8 +10,6 @@ import { ObjectId } from 'mongodb';
 import { EnvVars } from '../core/env-vars.core.js';
 
 const router = Router();
-const db = new MongoService();
-
 router.post('/login', UserAlreadyAuthenticated, async (req, res) => {
   try {
     const { userName, pw } = req.body;
