@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import router from './api/routes.js';
+import router from './api/routes.api.js';
 import VerifyEnvVars from './core/env-vars.core.js';
 
 dotenv.config();
