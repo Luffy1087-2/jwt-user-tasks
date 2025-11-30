@@ -7,18 +7,23 @@ import db from '../../src/service/mongo.service.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Collection } from 'mongodb';
+import { EnvVars } from '../../src/core/env-vars.core.js';
 
-describe('route /login', () => {
+describe('routes', () => {
   let findOneStub: sinon.SinonStub;
   let updateOneStub: sinon.SinonStub;
   let insertOneStub: sinon.SinonStub;
+  const validRefreshToken = jwt.sign({ userName: 'test', sub: '123' }, EnvVars.jwtRefreshToken);
+  const invalidRefreshToken = 'invalid-token';
 
   beforeEach(() => {
     findOneStub = sinon.stub();
+    insertOneStub = sinon.stub();
+    updateOneStub = sinon.stub();
     sinon.stub(db, 'getCollection').returns({
       findOne: findOneStub,
-      updateOne: findOneStub,
-      insertOneStub: findOneStub
+      insertOne: insertOneStub,
+      updateOne: updateOneStub,
     } as unknown as Collection);
   });
 
@@ -51,5 +56,61 @@ describe('route /login', () => {
       .post('/login')
       .send({ userName: 'username', pw: 'password' });
     assert.strictEqual(response.status, 500);
+  });
+
+  it('should return a new token if the refresh token is valid', async () => {
+    sinon.stub(jwt, 'verify').returns({} as any);
+    sinon.stub(jwt, 'sign').returns('newToken' as any);
+    findOneStub.returns({});
+    const response = await request(app)
+      .post('/refreshToken')
+      .set('Authorization', `Bearer ${validRefreshToken}`);
+
+    assert.strictEqual(response.status, 201);
+    assert.ok(response.body.token);
+  });
+
+  it('should return 403 if the refresh token is missing', async () => {
+    const response = await request(app)
+      .post('/refreshToken');
+
+    assert.strictEqual(response.status, 403);
+    assert.strictEqual(response.body.message, 'invalid refresh token');
+  });
+
+  it('should return 500 if there is an error during token verification', async () => {
+    const errorMessage = 'token verification error';
+    sinon.stub(jwt, 'verify').returns({} as any);
+    sinon.stub(jwt, 'sign').throws(new Error(errorMessage));
+    findOneStub.returns({});
+    const response = await request(app)
+      .post('/refreshToken')
+      .set('Authorization', `Bearer ${validRefreshToken}`);
+
+    assert.strictEqual(response.status, 500);
+    assert.strictEqual(response.body.message, errorMessage);
+  });
+
+  it('register, 403 when user is existing', async () => {
+    findOneStub.withArgs({ userName: 'existingUser' }).returns({ userName: 'existingUser' });
+    const response = await request(app)
+      .post('/register')
+      .send({ userName: 'existingUser', pw: 'pw' });
+
+    assert.strictEqual(response.status, 403);
+    assert.strictEqual(response.body.message, 'user already present');
+  });
+
+  it('register, user is registered', async () => {
+    findOneStub.withArgs({ userName: 'existingUser' }).returns(null);
+    insertOneStub.returns(Promise.resolve({ acknowledged: true }));
+    updateOneStub.returns(Promise.resolve(1));
+    sinon.stub(jwt, 'sign').returns('tokens' as any);
+    sinon.stub(jwt, 'verify').returns('tokens' as any);
+    const response = await request(app)
+      .post('/register')
+      .send({ userName: 'existingUser', pw: 'pw' });
+
+    assert.strictEqual(response.status, 201);
   });
 });

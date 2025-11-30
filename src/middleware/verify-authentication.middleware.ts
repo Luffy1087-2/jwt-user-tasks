@@ -7,7 +7,7 @@ export function VerifyAuthentication(req: Request, res: Response, next: NextFunc
   try {
     const auth = req.headers['authorization'];
     const token = auth?.startsWith('Bearer ') && auth.split(' ')[1];
-    if (!token || !token.trim().length) return res.status(403).json({ message: 'User not authenticated' });
+    if (!token || !token.trim().length) return res.status(403).json({ message: 'invalid refresh token' });
     const user = jwt.verify(token, EnvVars.jwtAccessToken) as unknown as User;
     (req as any).user = user;
     next();
