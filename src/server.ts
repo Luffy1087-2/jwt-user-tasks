@@ -8,6 +8,5 @@ VerifyEnvVars();
 const app = express();
 app.use(express.json());
 app.use(router);
-app.listen(3000, () => console.log('✅ Server su http://localhost:3000'));
 
 export default app;

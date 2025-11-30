@@ -6,10 +6,10 @@ import { MongoTasksCollection, MongoUsersCollection, MongoValidTokenCollection }
 import { AssertBodyParameters } from '../middleware/assert-params.middleware.js';
 import { UserAlreadyAuthenticated } from '../middleware/user-already-authenticated.middleware.js';
 import { VerifyAuthentication } from '../middleware/verify-authentication.middleware.js';
+import { IsRefreshTokenInWhiteList } from '../middleware/refresh-token-in-whitelist.middleware.js';
 import { ObjectId } from 'mongodb';
 import { EnvVars } from '../core/env-vars.core.js';
 import { addRefreshToken } from '../service/jwt.service.js';
-import { IsRefreshTokenInWhiteList } from '../middleware/refresh-token-in-whitelist.middleware.js';
 
 const router = Router();
 router.post('/login', UserAlreadyAuthenticated, async (req, res) => {
