@@ -121,13 +121,17 @@ router.put('/updateTask', VerifyAuthentication, async (req, res) => {
 });
 
 router.delete('/logout', IsRefreshTokenInWhiteList, async (req, res) => {
-  const auth = req.headers['authorization'];
-  const refreshToken = auth?.startsWith('Bearer ') && auth.split(' ')[1] || '';
-  const validTokens = db.getCollection(MongoValidTokenCollection);
-  const foundToken = await validTokens.findOne({ refreshToken });
-  if (!foundToken) return res.status(404).json({ message: 'token not found' });
-  await validTokens.deleteOne({ _id: foundToken._id });
-  res.status(200).json({ messege: 'logout success' });
+  try {
+    const auth = req.headers['authorization'];
+    const refreshToken = auth?.startsWith('Bearer ') && auth.split(' ')[1] || '';
+    const validTokens = db.getCollection(MongoValidTokenCollection);
+    const foundToken = await validTokens.findOne({ refreshToken });
+    if (!foundToken) return res.status(404).json({ message: 'token not found' });
+    await validTokens.deleteOne({ _id: foundToken._id });
+    res.status(200).json({ messege: 'logout success' });
+  } catch (e: any) {
+    res.status(500).json({ message: e.message });
+  }
 });
 
 export default router;

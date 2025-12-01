@@ -207,4 +207,75 @@ describe('routes', () => {
 
     assert.strictEqual(response.status, 400);
   });
+
+  it('updateTask, returns status code 200', async () => {
+    sinon.stub(jwt, 'verify').returns({ sub: '507f1f77bcf86cd799439011' } as any);
+    findOneStub.returns(Promise.resolve({}));
+    updateOneStub.returns(void 0);
+    const response = await request(app)
+      .put('/updateTask')
+      .set('Authorization', `Bearer ${validRefreshToken}`)
+      .send({ taskId: '507f1f77bcf86cd799439077', name: 'name', description: 'description', status: 0 });
+
+    assert.strictEqual(response.status, 200);
+  });
+
+  it('updateTask, returns status code 400, 404 and 500', async () => {
+    sinon.stub(jwt, 'verify').returns({ sub: '507f1f77bcf86cd799439011' } as any);
+    findOneStub.returns(Promise.resolve({}));
+    updateOneStub.returns(void 0);
+    let response = await request(app)
+      .put('/updateTask')
+      .set('Authorization', `Bearer ${validRefreshToken}`)
+      .send({ taskId: '', name: 'name', description: 'description', status: 0 });
+
+    assert.strictEqual(response.status, 400);
+
+    response = await request(app)
+      .put('/updateTask')
+      .set('Authorization', `Bearer ${validRefreshToken}`)
+      .send({ taskId: '507f1f77bcf86cd799439077' });
+
+    assert.strictEqual(response.status, 400);
+
+    findOneStub.returns(Promise.resolve(void 0));
+    response = await request(app)
+      .put('/updateTask')
+      .set('Authorization', `Bearer ${validRefreshToken}`)
+      .send({ taskId: '507f1f77bcf86cd799439077', name: 'name', description: 'description', status: 0 });
+
+    assert.strictEqual(response.status, 404);
+
+    findOneStub.throws('error');
+    response = await request(app)
+      .put('/updateTask')
+      .set('Authorization', `Bearer ${validRefreshToken}`)
+      .send({ taskId: '507f1f77bcf86cd799439077', name: 'name', description: 'description', status: 0 });
+
+    assert.strictEqual(response.status, 500);
+  });
+
+  it('logout, returns status code 200', async () => {
+    sinon.stub(jwt, 'verify').returns({ sub: '507f1f77bcf86cd799439011' } as any);
+    findOneStub.returns(Promise.resolve({}));
+    deleteOneStub.returns(void 0);
+    const response = await request(app)
+      .delete('/logout')
+      .set('Authorization', `Bearer ${validRefreshToken}`)
+      .send({ taskId: '507f1f77bcf86cd799439077', name: 'name', description: 'description', status: 0 });
+
+    assert.strictEqual(response.status, 200);
+  });
+
+  it('logout, returns status code 500', async () => {
+    sinon.stub(jwt, 'verify').returns({ sub: '507f1f77bcf86cd799439011' } as any);
+    findOneStub.returns(Promise.resolve({}));
+    deleteOneStub.throws('error');
+    const response = await request(app)
+      .delete('/logout')
+      .set('Authorization', `Bearer ${validRefreshToken}`)
+      .send({ taskId: '507f1f77bcf86cd799439077', name: 'name', description: 'description', status: 0 });
+
+    assert.strictEqual(response.status, 500);
+  });
 });
