@@ -52,8 +52,13 @@ Once you do that, you can run the containers by typing the command:
 npm run docker:start
 ```
 
-## How to test the application
+### How to test the application
 
  In the root project folder, there is a file called `jwt-user-tasks.postman_environment.json` containing all the requests for postman.
 
  You just need to import it for understanding every request a user can do.
+
+ ### How to run unit tests
+ ```text
+npm run test
+```
